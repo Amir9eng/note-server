@@ -1,0 +1,20 @@
+@endPoint = http://localhost:3002/api/notes
+
+
+
+GET {{endPoint}}/2
+
+
+###
+GET {{endPoint}}
+
+###
+POST {{endPoint}}
+content-type: application/json
+
+{
+    "content": "VS Code Rest Client is pretty good upooo" 
+}
+
+###
+DELETE {{endPoint}}/1
