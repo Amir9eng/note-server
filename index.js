@@ -1,7 +1,11 @@
 const { request, response } = require("express");
 const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
 const app = express();
 
+app.use(morgan());
+app.use(cors());
 app.use(express.json());
 
 let notes = [
@@ -40,7 +44,6 @@ app.get("/api/notes/:id", (request, response) => {
   } else {
     response.status(404).end();
   }
-
   response.json(note);
 });
 
@@ -81,6 +84,6 @@ app.get("/api/notes", (request, response) => {
   response.json(notes);
 });
 
-const PORT = 3002;
+const PORT = process.env.PORT || 3002;
 app.listen(PORT);
 console.log(`Server running on port ${PORT}`);
