@@ -1,12 +1,13 @@
-const express = require("express");
-const cors = require("cors");
-const morgan = require("morgan");
-const app = express();
+const express = require("express")
+const cors = require("cors")
+const morgan = require("morgan")
+require("dotenv").config()
+const app = express()
 
-app.use(morgan());
-app.use(cors());
-app.use(express.json());
-app.use(express.static("build"));
+app.use(morgan("tiny"))
+app.use(cors())
+app.use(express.json())
+app.use(express.static("build"))
 
 let notes = [
   {
@@ -27,36 +28,36 @@ let notes = [
     date: "2019-05-30T19:20:14.298Z",
     important: true,
   },
-];
+]
 
 app.get("/", (request, response) => {
-  response.end("<h1>Hello Mukhtar</h1>");
-});
+  response.end("<h1>Hello Mukhtar</h1>")
+})
 
 app.get("/api/notes/:id", (request, response) => {
-  const id = Number(request.params.id);
-  console.log(id);
-  const note = notes.find((note) => note.id === id);
+  const id = Number(request.params.id)
+  console.log(id)
+  const note = notes.find((note) => note.id === id)
   if (note) {
-    response.json(note);
+    response.json(note)
   } else {
-    response.status(404).end();
+    response.status(404).end()
   }
-  response.json(note);
-});
+  response.json(note)
+})
 
 const generateId = () => {
-  const maxId = notes.length > 0 ? Math.max(...notes.map((n) => n.id)) : 0;
-  return maxId + 1;
-};
+  const maxId = notes.length > 0 ? Math.max(...notes.map((n) => n.id)) : 0
+  return maxId + 1
+}
 
 app.post("/api/notes", (request, response) => {
-  const body = request.body;
+  const body = request.body
 
   if (!body.content) {
     return response.status(400).json({
       error: "content missing",
-    });
+    })
   }
 
   const note = {
@@ -64,24 +65,24 @@ app.post("/api/notes", (request, response) => {
     important: body.important || false,
     date: new Date(),
     id: generateId(),
-  };
+  }
 
-  notes = notes.concat(note);
+  notes = notes.concat(note)
 
-  response.json(note);
-});
+  response.json(note)
+})
 
 app.delete("/api/notes/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const note = notes.filter((note) => note.id !== id);
-  console.log(note);
-  response.json(note).status(204).end();
-});
+  const id = Number(request.params.id)
+  const note = notes.filter((note) => note.id !== id)
+  console.log(note)
+  response.json(note).status(204).end()
+})
 
 app.get("/api/notes", (request, response) => {
-  response.json(notes);
-});
+  response.json(notes)
+})
 
-const PORT = process.env.PORT || 3002;
-app.listen(PORT);
-console.log(`Server running on port ${PORT}`);
+const PORT = process.env.PORT
+app.listen(PORT)
+console.log(`Server running on port ${PORT}`)
