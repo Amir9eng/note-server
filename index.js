@@ -1,8 +1,10 @@
+require("dotenv").config()
+
 const express = require("express")
 const cors = require("cors")
 const morgan = require("morgan")
-require("dotenv").config()
 const app = express()
+const Note = require("./models/note")
 
 app.use(morgan("tiny"))
 app.use(cors())
@@ -35,15 +37,19 @@ app.get("/", (request, response) => {
 })
 
 app.get("/api/notes/:id", (request, response) => {
-  const id = Number(request.params.id)
-  console.log(id)
-  const note = notes.find((note) => note.id === id)
-  if (note) {
-    response.json(note)
-  } else {
-    response.status(404).end()
-  }
-  response.json(note)
+  notes
+    .findById(request.params.id)
+    .then((note) => {
+      if (note) {
+        response.json(note)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+      response.status(500).end()
+    })
 })
 
 const generateId = () => {
@@ -80,7 +86,9 @@ app.delete("/api/notes/:id", (request, response) => {
 })
 
 app.get("/api/notes", (request, response) => {
-  response.json(notes)
+  Note.find({}).then((notes) => {
+    response.json(notes)
+  })
 })
 
 const PORT = process.env.PORT

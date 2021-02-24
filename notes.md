@@ -49,3 +49,13 @@ response.json(notes);
 # POST http://localhost:3002/api/notes
 
 # Content-Type: application/json
+
+app.get("/api/notes/:id", (request, response) => {
+const id = Number(request.params.id)
+const note = notes.find((note) => note.id === id)
+if (note) {
+response.json(note)
+} else {
+response.status(404).end()
+}
+})
