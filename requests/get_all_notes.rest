@@ -1,4 +1,4 @@
-@endPoint = http://localhost:3002/api/notes
+@endPoint = https://arcane-tor-55493.herokuapp.com/api/notes
 
 
 
@@ -13,7 +13,7 @@ POST {{endPoint}}
 content-type: application/json
 
 {
-    "content": "VS Code Rest Client is pretty good upooo" 
+    "content": "VS Code Rest Client is pretty good" 
 }
 
 ###

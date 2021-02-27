@@ -32,7 +32,19 @@ let notes = [
   },
 ]
 
-app.get("/", (request, response) => {
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" })
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
+
+app.get("/", (request, response, next) => {
   response.end("<h1>Hello Mukhtar</h1>")
 })
 
@@ -46,10 +58,7 @@ app.get("/api/notes/:id", (request, response) => {
         response.status(404).end()
       }
     })
-    .catch((error) => {
-      console.log(error)
-      response.status(500).end()
-    })
+    .catch((error) => next(error))
 })
 
 const generateId = () => {
