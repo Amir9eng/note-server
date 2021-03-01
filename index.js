@@ -31,6 +31,26 @@ let notes = [
     important: true,
   },
 ]
+app.post("/api/notes", (request, response) => {
+  const body = request.body
+
+  if (!body.content) {
+    return response.status(400).json({
+      error: "content missing",
+    })
+  }
+
+  const note = {
+    content: body.content,
+    important: body.important || false,
+    date: new Date(),
+    id: generateId(),
+  }
+
+  notes = notes.concat(note)
+
+  response.json(note)
+})
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
@@ -43,6 +63,10 @@ const errorHandler = (error, request, response, next) => {
 }
 
 app.use(errorHandler)
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" })
+}
 
 app.get("/", (request, response, next) => {
   response.end("<h1>Hello Mukhtar</h1>")
@@ -65,27 +89,6 @@ const generateId = () => {
   const maxId = notes.length > 0 ? Math.max(...notes.map((n) => n.id)) : 0
   return maxId + 1
 }
-
-app.post("/api/notes", (request, response) => {
-  const body = request.body
-
-  if (!body.content) {
-    return response.status(400).json({
-      error: "content missing",
-    })
-  }
-
-  const note = {
-    content: body.content,
-    important: body.important || false,
-    date: new Date(),
-    id: generateId(),
-  }
-
-  notes = notes.concat(note)
-
-  response.json(note)
-})
 
 app.delete("/api/notes/:id", (request, response) => {
   const id = Number(request.params.id)
